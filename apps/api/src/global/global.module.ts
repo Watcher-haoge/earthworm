@@ -1,6 +1,7 @@
 import { Global, Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 
+import { InMemoryRankStore } from "../rank/rank.store";
 import { DB, DbProvider } from "./providers/db.provider";
 
 const envConfig = {
@@ -17,7 +18,7 @@ const envFilePath = envConfig[process.env.NODE_ENV] || ".env";
       isGlobal: true,
     }),
   ],
-  providers: [DbProvider],
-  exports: [DB],
+  providers: [DbProvider, InMemoryRankStore],
+  exports: [DB, InMemoryRankStore],
 })
 export class GlobalModule {}

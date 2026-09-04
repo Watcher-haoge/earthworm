@@ -1,4 +1,3 @@
-import { RedisModule } from "@nestjs-modules/ioredis";
 import { Module } from "@nestjs/common";
 import { ScheduleModule } from "@nestjs/schedule";
 
@@ -16,6 +15,7 @@ import { UserCourseProgressModule } from "../user-course-progress/user-course-pr
 import { UserLearningActivityModule } from "../user-learning-activity/user-learning-activity.module";
 import { UserModule } from "../user/user.module";
 
+// 本地自部署模式：排行榜改用进程内内存存储，不再依赖外部 Redis
 @Module({
   imports: [
     GlobalModule,
@@ -31,15 +31,6 @@ import { UserModule } from "../user/user.module";
     CourseHistoryModule,
     MembershipModule,
     MasteredElementModule,
-    RedisModule.forRootAsync({
-      useFactory: () => ({
-        type: "single",
-        url: process.env.REDIS_URL,
-        options: {
-          password: process.env.REDIS_PASSWORD,
-        },
-      }),
-    }),
     ScheduleModule.forRoot(),
   ],
 })

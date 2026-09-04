@@ -1,9 +1,8 @@
-import { InjectRedis } from "@nestjs-modules/ioredis";
 import { Injectable, Logger } from "@nestjs/common";
-import Redis from "ioredis";
 
 import { UserEntity } from "../user/user.decorators";
 import { UserService } from "../user/user.service";
+import { InMemoryRankStore } from "./rank.store";
 
 // 定义周期枚举
 export enum RankPeriod {
@@ -24,7 +23,7 @@ export class RankService {
     [RankPeriod.YEARLY]: `${this.FINISH_COUNT_KEY}:${RankPeriod.YEARLY}Rank`,
   };
   constructor(
-    @InjectRedis() private readonly redis: Redis,
+    private readonly redis: InMemoryRankStore,
     private readonly userService: UserService,
   ) {}
 
