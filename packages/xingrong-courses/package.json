@@ -8,7 +8,8 @@
     "course:add": "tsx src/addCourse.ts",
     "course:reset": "tsx src/resetCourseStatements.ts",
     "pdf:parse": "tsx src/parsePDF/index.ts",
-    "test": "vitest"
+    "test": "vitest",
+    "cli": "tsx src/import-cli.ts"
   },
   "dependencies": {
     "@earthworm/db": "workspace:^",
