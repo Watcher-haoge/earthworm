@@ -1,11 +1,13 @@
 import { createId } from "@paralleldrive/cuid2";
-import { jsonb, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { sqliteTable, text } from "drizzle-orm/sqlite-core";
 
-export const masteredElements = pgTable("mastered_elements", {
+import { timestamp } from "./coursePack";
+
+export const masteredElements = sqliteTable("mastered_elements", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => createId()),
   userId: text("user_id").notNull(),
-  content: jsonb("content").notNull(),
-  masteredAt: timestamp("mastered_at").defaultNow(),
+  content: text("content").notNull(),
+  masteredAt: timestamp("mastered_at").$defaultFn(() => new Date()),
 });

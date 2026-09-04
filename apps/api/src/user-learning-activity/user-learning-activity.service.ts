@@ -39,9 +39,8 @@ export class UserLearningActivityService {
         ],
         set: {
           duration: sql`${userLearningActivitiesSchema.duration} + ${duration}`,
-          metadata: metadata
-            ? sql`${userLearningActivitiesSchema.metadata} || ${JSON.stringify(metadata)}::jsonb`
-            : undefined,
+          // SQLite 无 jsonb 合并运算，直接整体覆盖 metadata
+          metadata: metadata ?? undefined,
           updatedAt: new Date(),
         },
       });

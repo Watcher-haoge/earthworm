@@ -1,7 +1,9 @@
 import { createId } from "@paralleldrive/cuid2";
-import { date, integer, pgTable, text, timestamp, unique } from "drizzle-orm/pg-core";
+import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
 
-export const userLearnRecord = pgTable(
+import { timestamp } from "./coursePack";
+
+export const userLearnRecord = sqliteTable(
   "user_learn_record",
   {
     id: text("id")
@@ -9,8 +11,10 @@ export const userLearnRecord = pgTable(
       .$defaultFn(() => createId()),
     userId: text("user_id").notNull(),
     count: integer("count").notNull().default(0),
-    day: date("day").notNull(),
-    createdAt: timestamp("created_at").notNull().defaultNow(),
+    day: text("day").notNull(),
+    createdAt: timestamp("created_at")
+      .notNull()
+      .$defaultFn(() => new Date()),
     updatedAt: timestamp("updated_at").$onUpdateFn(() => new Date()),
   },
   (t) => ({

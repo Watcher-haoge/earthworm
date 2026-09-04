@@ -5,13 +5,14 @@ import * as dotenv from "dotenv";
 
 dotenv.config({ path: path.resolve(__dirname, "../../apps/api/.env") });
 
-console.log("process.env.DATABASE_URL: ", process.env.DATABASE_URL);
+const dbFile = process.env.SQLITE_PATH || path.resolve(__dirname, "../../.volumes/earthworm.db");
+console.log("sqlite file: ", dbFile);
 
 export default {
   schema: "../schema/src/schema/*",
   out: "./drizzle",
-  dialect: "postgresql",
+  dialect: "sqlite",
   dbCredentials: {
-    url: process.env.DATABASE_URL || "",
+    url: dbFile,
   },
 } satisfies Config;

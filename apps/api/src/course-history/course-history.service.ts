@@ -52,7 +52,8 @@ export class CourseHistoryService {
       })
       .onConflictDoUpdate({
         target: [courseHistory.userId, courseHistory.courseId, courseHistory.coursePackId],
-        set: { completionCount: sql`course_history.completion_count + 1` },
+        // SQLite 的 upsert SET 子句不允许使用限定列名
+        set: { completionCount: sql`completion_count + 1` },
       });
   }
 }

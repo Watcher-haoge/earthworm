@@ -1,19 +1,19 @@
+import * as fs from "node:fs";
+import * as path from "node:path";
+
 import { Logger } from "@nestjs/common";
 import { DefaultLogger, LogWriter } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/postgres-js";
-import * as postgres from "postgres";
+import { drizzle } from "drizzle-orm/better-sqlite3";
 
 import { schemas } from "@earthworm/schema";
 
-let connection: postgres.Sql;
+import Database = require("better-sqlite3");
 
-async function createConnection() {
-  return postgres(process.env.DATABASE_URL ?? "");
-}
+let connection: Database.Database;
 
 export async function endDB() {
   if (connection) {
-    await connection.end();
+    connection.close();
     connection = null;
   }
 }
@@ -29,10 +29,24 @@ export async function setupDB() {
     }
   }
 
-  logger.debug(`Connecting to ${process.env.DATABASE_URL}`);
-  logger.debug(`SECRET: ${process.env.SECRET}`);
+  // 本地自部署模式：使用 SQLite 单文件数据库，无需外部 Postgres
+  // 从当前目录向上查找已存在的 .volumes/earthworm.db（兼容 dev/src 与 dist 两种深度）
+  function findDbFile(): string {
+    if (process.env.SQLITE_PATH) return process.env.SQLITE_PATH;
+    let dir = __dirname;
+    for (let i = 0; i < 6; i++) {
+      const candidate = path.resolve(dir, ".volumes/earthworm.db");
+      if (fs.existsSync(candidate)) return candidate;
+      dir = path.resolve(dir, "..");
+    }
+    return path.resolve(__dirname, ".volumes/earthworm.db");
+  }
+  const dbFile = findDbFile();
+  fs.mkdirSync(path.dirname(dbFile), { recursive: true });
+  logger.debug(`Opening sqlite file ${dbFile}`);
 
-  connection = await createConnection();
+  connection = new Database(dbFile);
+  connection.pragma("journal_mode = WAL");
 
   return drizzle(connection, {
     schema: schemas,

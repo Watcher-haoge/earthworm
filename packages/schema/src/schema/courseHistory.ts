@@ -1,7 +1,9 @@
 import { createId } from "@paralleldrive/cuid2";
-import { integer, pgTable, text, timestamp, unique } from "drizzle-orm/pg-core";
+import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
 
-export const courseHistory = pgTable(
+import { timestamp } from "./coursePack";
+
+export const courseHistory = sqliteTable(
   "course_history",
   {
     id: text("id")
@@ -11,7 +13,9 @@ export const courseHistory = pgTable(
     courseId: text("course_id").notNull(),
     coursePackId: text("course_pack_id").notNull(),
     completionCount: integer("completion_count").notNull(),
-    createdAt: timestamp("created_at").notNull().defaultNow(),
+    createdAt: timestamp("created_at")
+      .notNull()
+      .$defaultFn(() => new Date()),
     updatedAt: timestamp("updated_at").$onUpdateFn(() => new Date()),
   },
   (t) => ({

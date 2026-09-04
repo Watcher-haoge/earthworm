@@ -6,7 +6,7 @@
   "scripts": {
     "init:ci": "tsx src/migrate.ts",
     "init:test": "drizzle-kit push --config=drizzle.config.test.ts",
-    "init": "drizzle-kit push",
+    "init": "tsx src/init-local.ts",
     "db:studio": "drizzle-kit studio",
     "generate": "drizzle-kit generate",
     "migrate": "drizzle-kit migrate"
@@ -15,12 +15,12 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "drizzle-kit": "^0.23.0",
-    "pg": "^8.11.5"
+    "@types/better-sqlite3": "^7.6.10",
+    "drizzle-kit": "^0.23.0"
   },
   "dependencies": {
-    "drizzle-orm": "^0.32.0",
-    "postgres": "^3.4.4",
-    "@earthworm/schema": "workspace:^"
+    "@earthworm/schema": "workspace:^",
+    "better-sqlite3": "^11.10.0",
+    "drizzle-orm": "^0.32.0"
   }
 }
