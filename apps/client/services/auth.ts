@@ -1,34 +1,33 @@
-import { useLogto } from "@logto/vue";
-import { useRuntimeConfig } from "nuxt/app";
+// 本地自部署模式：跳过 Logto 登录，始终视为已登录的本地用户
+export const LOCAL_USER_ID = "local-user";
 
-let logto: ReturnType<typeof useLogto>;
-let runtimeConfig: ReturnType<typeof useRuntimeConfig>;
-export async function setupAuth() {
-  logto = useLogto();
-  runtimeConfig = useRuntimeConfig();
-}
+const localUserInfo = {
+  sub: LOCAL_USER_ID,
+  picture: "",
+  username: "我",
+  email: "local@localhost",
+};
 
-export async function signIn(callback?: string) {
-  callback && setSignInCallback(callback);
-  logto.signIn(runtimeConfig.public.signInRedirectURI);
+export async function setupAuth() {}
+
+export async function signIn(_callback?: string) {
+  // 本地模式无需登录
 }
 
 export function signOut() {
-  return logto.signOut(runtimeConfig.public.signOutRedirectURI);
+  // 本地模式无需登出
 }
 
 export function isAuthenticated() {
-  return logto.isAuthenticated.value;
+  return true;
 }
 
 export async function getToken() {
-  const accessToken = await logto.getAccessToken(runtimeConfig.public.backendEndpoint);
-
-  return accessToken;
+  return "local-token";
 }
 
-export function fetchUserInfo() {
-  return logto.fetchUserInfo();
+export async function fetchUserInfo() {
+  return localUserInfo;
 }
 
 export function getSignInCallback() {
@@ -41,6 +40,6 @@ export function getSignInCallback() {
   }
 }
 
-function setSignInCallback(callback: string) {
+export function setSignInCallback(callback: string) {
   sessionStorage.setItem("callback", callback);
 }

@@ -1,27 +1,8 @@
-import type { LogtoConfig } from "@logto/vue";
-
-import { createLogto, UserScope } from "@logto/vue";
-import { defineNuxtPlugin, useRuntimeConfig } from "nuxt/app";
+import { defineNuxtPlugin } from "nuxt/app";
 
 import { setupAuth } from "~/services/auth";
 
+// 本地自部署模式：不再初始化 Logto SDK，仅保留 setupAuth 调用点
 export default defineNuxtPlugin((nuxtApp) => {
-  const runtimeConfig = useRuntimeConfig();
-
-  const config: LogtoConfig = {
-    endpoint: runtimeConfig.public.endpoint,
-    appId: runtimeConfig.public.appId,
-
-    scopes: [
-      UserScope.Email,
-      UserScope.Phone,
-      UserScope.CustomData,
-      UserScope.Identities,
-      UserScope.Organizations,
-    ],
-    resources: [runtimeConfig.public.backendEndpoint],
-  };
-
-  nuxtApp.vueApp.use(createLogto, config);
   setupAuth();
 });
